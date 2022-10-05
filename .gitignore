@@ -1,2 +1,6 @@
 desafio.md
 .venv/
+__pycache__
+migrations
+*.pyc
+db.sqlite3
