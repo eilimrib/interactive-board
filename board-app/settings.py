@@ -61,7 +61,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'boardapp.urls'
+ROOT_URLCONF = 'board-app.urls'
 
 TEMPLATES = [
     {
@@ -79,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'boardapp.wsgi.application'
+WSGI_APPLICATION = 'board-app.wsgi.application'
 
 
 # Database

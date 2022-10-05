@@ -42,11 +42,14 @@ def card_detail(request, pk):
     except:
         # respond with a 404 error message
         return HttpResponse(status=404)  
-    if(request.method == 'PUT'):
+    if(request.method == 'GET'):
+        serializer = CardSerializer(card, many=False)
+        return JsonResponse(serializer.data,safe=False)
+    elif(request.method == 'PUT'):
         # parse the incoming information
         data = JSONParser().parse(request)  
         # instanciate with the serializer
-        serializer = CardSerializer(cards, data=data)
+        serializer = CardSerializer(card, data=data)
         # check whether the sent information is okay
         if(serializer.is_valid()):  
             # if okay, save it on the database

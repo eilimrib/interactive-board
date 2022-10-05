@@ -3,4 +3,3 @@ desafio.md
 __pycache__
 migrations
 *.pyc
-db.sqlite3
