@@ -3,15 +3,16 @@
         <div class="cards_content">
             <h1>Cards</h1>
             <ul class="card_list">
-                <li v-for="card in cards" :key="card.id">
-                    <h2>{{ card.title }}</h2>
-                    <p>{{ card.value }}</p>
+                <div 
+                    v-for="card in cards" 
+                    :key="card.id"
+                    class="drag-el"
+                    draggable="true"
+                    @dragStart="startDrag($event, card)"
+                >
+                    <button @click="toggleCard(card)">{{ card.title }}</button>
                     <p>{{ card.content }}</p>
-                    <button @click="toggleCard(card)">
-                        {{ card.completed ? 'Undo' : 'Complete' }}
-                    </button>
-                    <button @click="deleteCard(card)">Delete</button>
-                </li>
+                </div>
             </ul>
         </div>
         <div class="add_card">
@@ -44,44 +45,80 @@
                 cards: [],
                 title: '',
                 value: 0,
+                list: 0, 
+                localOrder: 0,
                 description: '',
             }
         },
         methods: {
             async getData() {
                 try {
-                    // fetch tasks
                     const response = await this.$http.get('http://localhost:8000/api/cards/');
-                    // set the data returned as tasks
                     this.cards = response.data; 
                 } catch (error) {
-                    // log the error
                     console.log(error);
                 }
             },
+            async getCard(list) {
+                return this.cards.value.filter((card) => card.list == list) 
+            },
             async submitForm(){
                 try {
-                    // Send a POST request to the API
                     const response = await this.$http.post('http://localhost:8000/api/cards/', {
                         title: this.title,
-                        value: this.value,
                         content: this.content,
-                        completed: false
+                        order: this.cards.length+1,
+                        list: this.list,
                     });
-                    // Append the returned data to the tasks array
                     this.cards.push(response.data);
                     // Reset the title and description field values.
                     this.title = '';
                     this.value = 0;
                     this.content = '';
                 } catch (error) {
-                    // Log the error
                     console.log(error);
                 }
+            },
+            async toggleCard(card){
+                try{
+                    const response = await this.$http.put(`http://localhost:8000/api/cards/${card.id}/`, {
+                        completed: !card.completed,
+                        title: card.title,
+                        value: card.value,
+                        content: card.content,
+                        order: this.localOrder,
+                    });
+                    let cardIndex = this.cards.findIndex(c => c.id === card.id);
+                    // Reset the cards array with the new data of the updated task
+                    this.cards = this.cards.map((card) => {
+                        if(this.cards.findIndex(c => c.id === card.id) === cardIndex){
+                            return response.data;
+                        }
+                        return card;
+                    });
+
+                }catch(error){
+                    console.log(error);
+                }
+            },
+            async deleteCard(card){
+                if(confirm("Are you sure?")){
+                    try{
+                        await this.$http.delete(`http://localhost:8000/api/cards/${card.id}`);
+                        this.getData();
+                    } catch(error){
+                        console.log(error)
+                    }
+                }      
+            },
+            startDrag(event, item) {
+                console.log(item)
+                event.dataTransfer.dropEffect = "move"
+                event.dataTransfer.effectAllowed = "move"
+                event.dataTransfer.setData('localOrder', item.order)
             }
         },
         created() {
-            // Fetch tasks on page load
             this.getData();
         }
     }
