@@ -1,29 +1,29 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
-from board.serializers.card_serializer import CardSerializer
-from board.models.card_model import Card
+from board.serializers.list_serializer import ListSerializer
+from board.models.list_model import List
 from rest_framework.parsers import JSONParser
 # Create your views here.
 
 
 @csrf_exempt
-def cards(request):
+def lists(request):
     '''
-    List all card snippets
+    List all list snippets
     '''
     if(request.method == 'GET'):
         # get all the lists
-        cards = Card.objects.all()
+        lists = List.objects.all()
         # serialize the list data
-        serializer = CardSerializer(cards, many=True)
+        serializer = ListSerializer(lists, many=True)
         # return a Json response
         return JsonResponse(serializer.data,safe=False)
     elif(request.method == 'POST'):
         # parse the incoming information
         data = JSONParser().parse(request)
         # instanciate with the serializer
-        serializer = CardSerializer(data=data)
+        serializer = ListSerializer(data=data)
         # check if the sent information is okay
         if(serializer.is_valid()):
             # if okay, save it on the database
@@ -35,21 +35,21 @@ def cards(request):
 
 
 @csrf_exempt
-def card_detail(request, pk):
+def list_detail(request, pk):
     try:
-        # obtain the card with the passed id.
-        card = card.objects.get(pk=pk)
+        # obtain the list with the passed id.
+        list = list.objects.get(pk=pk)
     except:
         # respond with a 404 error message
         return HttpResponse(status=404)  
     if(request.method == 'GET'):
-        serializer = CardSerializer(card, many=False)
+        serializer = ListSerializer(list, many=False)
         return JsonResponse(serializer.data,safe=False)
     elif(request.method == 'PUT'):
         # parse the incoming information
         data = JSONParser().parse(request)  
         # instanciate with the serializer
-        serializer = CardSerializer(card, data=data)
+        serializer = ListSerializer(list, data=data)
         # check whether the sent information is okay
         if(serializer.is_valid()):  
             # if okay, save it on the database
@@ -60,6 +60,6 @@ def card_detail(request, pk):
         return JsonResponse(serializer.errors, status=400)
     elif(request.method == 'DELETE'):
         # delete the list
-        card.delete() 
+        list.delete() 
         # return a no content response.
         return HttpResponse(status=204) 
