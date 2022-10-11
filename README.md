@@ -6,7 +6,7 @@ Correções mínimas para funcionamento do backend do projeto dos devs Jrs. da F
 Conter um README com a explicação básica sobre a disposição dos arquivos no projeto e como o mesmo deve ser executado
 
 ### Ponto 2:
-Conter o arquivo requirements.txt ou equivalente contendo os requisitos (libs) mínimos para rodar o projeto
+Conter o arquivo requirements.txt ou equivalente contendo os requisitos (libs) mínimos para rodar o projeto e suas versões
 
 ### Ponto 3:
 Não adicionar arquivos de banco no projeto, mas sim as migrações
