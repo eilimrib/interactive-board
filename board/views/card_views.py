@@ -16,7 +16,7 @@ def cards(request):
         # get all the lists
         cards = Card.objects.all()
         # serialize the list data
-        serializer = CardSerializer(cards, many=True)
+        serializer = CardSerializer(cards, many=True, context={"request": request})
         # return a Json response
         return JsonResponse(serializer.data,safe=False)
     elif(request.method == 'POST'):

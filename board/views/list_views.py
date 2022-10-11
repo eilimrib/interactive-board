@@ -16,7 +16,7 @@ def lists(request):
         # get all the lists
         lists = List.objects.all()
         # serialize the list data
-        serializer = ListSerializer(lists, many=True)
+        serializer = ListSerializer(lists, many=True, context={"request": request})
         # return a Json response
         return JsonResponse(serializer.data,safe=False)
     elif(request.method == 'POST'):
@@ -38,8 +38,9 @@ def lists(request):
 def list_detail(request, pk):
     try:
         # obtain the list with the passed id.
-        list = list.objects.get(pk=pk)
-    except:
+        list = List.objects.get(pk=pk)
+    except Exception as e:
+        print(e)
         # respond with a 404 error message
         return HttpResponse(status=404)  
     if(request.method == 'GET'):
